@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de iPads — Colegio Cumbres</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --navy: #0d1f3c;
+    --navy2: #1a3560;
+    --gold: #c9922a;
+    --gold-light: #fdf6e8;
+    --green: #1e7a4e;
+    --green-light: #e6f4ee;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --blue: #1a5fa0;
+    --blue-light: #e8f2fc;
+    --border: #dde4ee;
+    --bg: #f5f7fb;
+    --white: #fff;
+    --text: #1c2b3a;
+    --soft: #5a6e82;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 22px 28px 18px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+  }
+  .header-left h1 { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+  .header-left p { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.75);
+    font-size: 11px; font-weight: 600;
+    padding: 5px 12px; border-radius: 20px;
+  }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #4caf50; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    padding: 0 28px;
+  }
+  .tab {
+    padding: 14px 22px;
+    font-size: 13px; font-weight: 600;
+    color: var(--soft);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--navy); }
+  .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+
+  /* ── MAIN ── */
+  .main { max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* ── VISTA OCULTA ── */
+  .vista { display: none; }
+  .vista.active { display: block; }
+
+  /* ── CONFIG PANEL ── */
+  .config-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .config-card h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .config-card h3 span { font-size: 16px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+  .form-field label { display: block; font-size: 11px; font-weight: 600; color: var(--soft); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-field input, .form-field select {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+    color: var(--text); background: var(--bg); transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  .form-field input:focus, .form-field select:focus { outline: none; border-color: var(--blue); background: var(--white); }
+
+  /* iPads grid */
+  .ipads-label { font-size: 11px; font-weight: 600; color: var(--soft); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .ipads-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .ipad-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--blue-light); border: 1.5px solid #b8d4ee;
+    color: var(--blue); border-radius: 20px;
+    padding: 5px 12px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .ipad-chip:hover { background: #d0e6f8; }
+  .ipad-chip .remove { font-size: 14px; line-height: 1; opacity: 0.6; }
+  .ipad-chip .remove:hover { opacity: 1; color: var(--red); }
+  .add-ipad-row { display: flex; gap: 8px; }
+  .add-ipad-row input { flex: 1; border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--bg); }
+  .add-ipad-row input:focus { outline: none; border-color: var(--blue); background: var(--white); }
+
+  .btn { padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-primary { background: var(--navy); color: #fff; }
+  .btn-primary:hover { background: var(--navy2); }
+  .btn-outline { background: transparent; color: var(--navy); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--navy); }
+  .btn-gold { background: var(--gold); color: #fff; }
+  .btn-gold:hover { background: #b07e20; }
+  .btn-sm { padding: 7px 14px; font-size: 12px; }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { background: #165f3c; }
+
+  /* ── VISTA ESTUDIANTE ── */
+  .session-banner {
+    background: linear-gradient(135deg, var(--navy), var(--navy2));
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    color: #fff;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  .session-info { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+  .session-title { font-size: 16px; font-weight: 700; }
+  .session-counter { text-align: right; }
+  .counter-num { font-size: 28px; font-weight: 700; color: var(--gold); line-height: 1; }
+  .counter-label { font-size: 11px; opacity: 0.6; }
+
+  .registro-form {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .registro-form h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
+
+  .input-large {
+    width: 100%; border: 2px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; font-family: 'DM Sans', sans-serif; font-size: 15px;
+    color: var(--text); background: var(--bg); transition: border-color 0.2s;
+    margin-bottom: 10px;
+  }
+  .input-large:focus { outline: none; border-color: var(--navy); background: var(--white); }
+
+  .ipad-selector { margin-bottom: 16px; }
+  .ipad-selector-label { font-size: 12px; font-weight: 600; color: var(--soft); margin-bottom: 10px; display: block; }
+  .ipad-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ipad-btn {
+    padding: 10px 18px; border-radius: 8px; border: 2px solid var(--border);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--soft); background: var(--bg); cursor: pointer; transition: all 0.15s;
+    position: relative;
+  }
+  .ipad-btn:hover { border-color: var(--navy); color: var(--navy); background: var(--white); }
+  .ipad-btn.selected { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .ipad-btn.ocupado { border-color: var(--red); background: var(--red-light); color: var(--red); opacity: 0.6; cursor: not-allowed; }
+  .ipad-btn.ocupado::after { content: '●'; position: absolute; top: 4px; right: 6px; font-size: 8px; }
+
+  .registro-ok {
+    display: none;
+    background: var(--green-light);
+    border: 2px solid var(--green);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    text-align: center;
+  }
+  .registro-ok.show { display: block; }
+  .registro-ok .ok-icon { font-size: 36px; margin-bottom: 8px; }
+  .registro-ok h3 { color: var(--green); font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .registro-ok p { color: var(--soft); font-size: 13px; }
+
+  /* ── VISTA PROFESOR ── */
+  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 18px; text-align: center;
+  }
+  .stat-num { font-size: 28px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 11px; color: var(--soft); margin-top: 4px; font-weight: 500; }
+  .stat-green .stat-num { color: var(--green); }
+  .stat-red .stat-num { color: var(--red); }
+  .stat-blue .stat-num { color: var(--blue); }
+  .stat-gold .stat-num { color: var(--gold); }
+
+  /* tabla registros */
+  .table-wrap {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 16px;
+  }
+  .table-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .table-header h3 { font-size: 14px; font-weight: 700; color: var(--navy); }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700;
+    color: var(--soft); text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border); background: var(--bg);
+  }
+  td { padding: 11px 14px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
+  .badge {
+    display: inline-block; padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-gold { background: var(--gold-light); color: var(--gold); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+
+  /* iPads estado */
+  .ipads-estado-grid { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px 18px; }
+  .ipad-estado {
+    padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; gap: 6px; border: 1.5px solid;
+  }
+  .ipad-estado.libre { background: var(--green-light); color: var(--green); border-color: #9dd4b6; }
+  .ipad-estado.usado { background: var(--gold-light); color: var(--gold); border-color: #e0c07a; }
+  .ipad-estado .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .ipad-estado.libre .dot { background: var(--green); }
+  .ipad-estado.usado .dot { background: var(--gold); }
+
+  /* exportar */
+  .export-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* vacía */
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--soft); font-size: 13px; }
+  .empty-state .icon { font-size: 36px; margin-bottom: 10px; }
+
+  /* alerta */
+  .alerta {
+    display: none;
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--navy); color: #fff;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 999; animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+  @media(max-width:600px){
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .form-row, .form-row.triple { grid-template-columns: 1fr; }
+    .tabs { padding: 0 14px; overflow-x: auto; }
+    .main { padding: 16px 12px 50px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>📱 Registro de iPads</h1>
+    <p>Colegio Cumbres · Sistema de préstamo en sala</p>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div> En línea</div>
+    <div id="reloj" style="font-size:13px;color:rgba(255,255,255,0.6);font-weight:500;"></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab" id="tab-config" onclick="accederTab('config')">⚙️ Profesor</div>
+  <div class="tab active" id="tab-estudiante" onclick="cambiarTab('estudiante')">👤 Registro iPad</div>
+  <div class="tab" id="tab-profesor" onclick="accederTab('profesor')">👁 Monitor</div>
+</div>
+
+<!-- MODAL CLAVE -->
+<div id="modal-clave" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:14px;padding:32px 28px;width:100%;max-width:360px;margin:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:36px;margin-bottom:8px;">🔒</div>
+      <h3 style="font-size:17px;font-weight:700;color:#0d1f3c;" id="modal-titulo">Acceso restringido</h3>
+      <p style="font-size:12.5px;color:#5a6e82;margin-top:6px;" id="modal-desc">Esta sección es solo para el profesor. Ingresa la clave de acceso.</p>
+    </div>
+    <input type="password" id="input-clave" placeholder="Clave del profesor"
+      style="width:100%;border:2px solid #dde4ee;border-radius:8px;padding:12px 14px;font-size:15px;font-family:inherit;margin-bottom:10px;text-align:center;letter-spacing:4px;"
+      onkeydown="if(event.key==='Enter')verificarClave()"
+      oninput="document.getElementById('clave-error').style.display='none'">
+    <p id="clave-error" style="display:none;color:#c0392b;font-size:12px;text-align:center;margin-bottom:10px;">❌ Clave incorrecta. Intenta nuevamente.</p>
+    <button onclick="verificarClave()"
+      style="width:100%;background:#0d1f3c;color:#fff;border:none;padding:13px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;">
+      Ingresar →
+    </button>
+    <button onclick="cerrarModal()"
+      style="width:100%;background:transparent;color:#5a6e82;border:1.5px solid #dde4ee;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;">
+      Cancelar
+    </button>
+    <p style="font-size:11px;color:#aab;text-align:center;margin-top:14px;">💡 Clave por defecto: <strong>cumbres2025</strong><br>Cámbiala en la configuración del sistema.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- TAB: CONFIGURAR -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="vista" id="vista-config">
+
+    <div class="config-card">
+      <h3><span>📋</span> Datos de la sesión</h3>
+      <div class="form-row triple">
+        <div class="form-field">
+          <label>Asignatura / Actividad</label>
+          <input type="text" id="cfg-asignatura" placeholder="Ej: Matemática, MakerSpace...">
+        </div>
+        <div class="form-field">
+          <label>Curso</label>
+          <select id="cfg-curso">
+            <option value="">Selecciona...</option>
+            <option>5° Básico</option><option>6° Básico</option>
+            <option>7° Básico</option><option>8° Básico</option>
+            <option>I° Medio</option><option>II° Medio</option>
+            <option>III° Medio</option><option>IV° Medio</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Docente / Responsable</label>
+          <input type="text" id="cfg-docente" placeholder="Nombre del profesor">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Modo de uso</label>
+          <select id="cfg-modo">
+            <option value="individual">Individual (1 iPad por estudiante)</option>
+            <option value="grupo">Por grupos (1 encargado por grupo)</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>N° máx. estudiantes esperados</label>
+          <input type="number" id="cfg-total" placeholder="Ej: 35" min="1" max="60">
+        </div>
+      </div>
+    </div>
+
+    <div class="config-card">
+      <h3><span>🔢</span> iPads disponibles en esta sesión</h3>
+      <p style="font-size:12.5px;color:var(--soft);margin-bottom:14px;">Agrega los números o códigos de los iPads que se repartirán hoy.</p>
+      <div class="ipads-grid" id="ipads-chips"></div>
+      <div class="add-ipad-row">
+        <input type="text" id="nuevo-ipad" placeholder="Ej: iPad-01, iPad-12, Grupo-A..." maxlength="20" onkeydown="if(event.key==='Enter')agregarIpad()">
+        <button class="btn btn-outline btn-sm" onclick="agregarIpad()">+ Agregar</button>
+        <button class="btn btn-outline btn-sm" onclick="agregarSerie()">+ Serie rápida</button>
+      </div>
+      <p style="font-size:11px;color:var(--soft);margin-top:10px;">💡 "Serie rápida" genera iPad-01 hasta iPad-N automáticamente.</p>
+    </div>
+
+    <!-- POWER AUTOMATE URL -->
+    <div class="config-card" style="border-left:4px solid var(--green);">
+      <h3><span>🔗</span> Conexión a Google Sheets</h3>
+      <p style="font-size:12.5px;color:var(--soft);margin-bottom:14px;">La URL de conexión a Google Sheets ya está configurada. Cada registro se guardará automáticamente en la hoja de cálculo del colegio.</p>
+      <div class="form-field" style="margin-bottom:10px;">
+        <label>URL de Google Apps Script</label>
+        <input type="text" id="cfg-pa-url" value="https://script.google.com/macros/s/AKfycbzYvwbu4igEXBtb-Y6YMBCC_dlFnAuA9-EckBRVDHLTyC1T1b3iAa9Y-K2uU6ih0vkOPQ/exec" style="font-size:11px;">
+      </div>
+      <div id="pa-estado" style="font-size:12px;color:var(--soft);display:flex;align-items:center;gap:8px;">
+        <span id="pa-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span>
+        <span id="pa-texto">✅ Google Sheets configurado — los registros se guardarán automáticamente</span>
+      </div>
+      <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="probarConexion()">⚡ Probar conexión</button>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-gold" onclick="iniciarSesion()">▶ Iniciar sesión de registro</button>
+      <button class="btn btn-outline" onclick="limpiarConfig()">Limpiar todo</button>
+      <button class="btn btn-outline" onclick="cerrarSesionProfesor()" style="margin-left:auto;color:var(--red);border-color:var(--red);">🔒 Cerrar acceso profesor</button>
+    </div>
+
+    <div class="config-card" style="margin-top:16px;border-left:4px solid var(--soft);">
+      <h3><span>🔑</span> Cambiar clave de acceso</h3>
+      <p style="font-size:12.5px;color:var(--soft);margin-bottom:14px;">Cambia la clave que protege la configuración y el monitor. La clave por defecto es <strong>cumbres2025</strong>.</p>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Nueva clave</label>
+          <input type="password" id="nueva-clave" placeholder="Escribe la nueva clave" maxlength="30">
+        </div>
+        <div class="form-field">
+          <label>Confirmar clave</label>
+          <input type="password" id="confirmar-clave" placeholder="Repite la clave" maxlength="30">
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="cambiarClave()">Guardar nueva clave</button>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- TAB: ESTUDIANTE -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="vista active" id="vista-estudiante">
+
+    <div class="session-banner" id="banner-sesion">
+      <div>
+        <div class="session-title" id="banner-titulo">Sin sesión activa</div>
+        <div class="session-info" id="banner-info">Configura una sesión primero</div>
+      </div>
+      <div class="session-counter">
+        <div class="counter-num" id="banner-contador">0</div>
+        <div class="counter-label">registros</div>
+      </div>
+    </div>
+
+    <div class="registro-form" id="form-registro">
+      <h3>✏️ Anota tu iPad</h3>
+
+      <div id="modo-individual">
+        <input class="input-large" type="text" id="nombre-estudiante"
+          placeholder="Tu nombre completo o N° de lista"
+          maxlength="60" oninput="limpiarOk()">
+
+        <div class="ipad-selector">
+          <span class="ipad-selector-label">Selecciona el iPad que estás usando:</span>
+          <div class="ipad-buttons" id="ipad-buttons-wrap"></div>
+        </div>
+      </div>
+
+      <div id="modo-grupo" style="display:none">
+        <input class="input-large" type="text" id="nombre-grupo"
+          placeholder="Nombre del grupo o encargado"
+          maxlength="60" oninput="limpiarOk()">
+        <input class="input-large" type="text" id="integrantes-grupo"
+          placeholder="Integrantes del grupo (separados por coma)"
+          maxlength="120" oninput="limpiarOk()">
+        <div class="ipad-selector">
+          <span class="ipad-selector-label">iPad(s) asignados al grupo:</span>
+          <div class="ipad-buttons" id="ipad-buttons-grupo"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-green" style="width:100%;padding:14px;font-size:15px;" onclick="registrarUso()">
+        ✅ Confirmar registro
+      </button>
+    </div>
+
+    <div class="registro-ok" id="registro-ok">
+      <div class="ok-icon">✅</div>
+      <h3 id="ok-titulo">¡Registrado!</h3>
+      <p id="ok-detalle">Tu registro quedó guardado correctamente.</p>
+      <br>
+      <button class="btn btn-outline btn-sm" onclick="nuevoRegistro()">Registrar otro</button>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- TAB: PROFESOR -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="vista" id="vista-profesor">
+
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card stat-green"><div class="stat-num" id="st-registrados">0</div><div class="stat-label">Registrados</div></div>
+      <div class="stat-card stat-red"><div class="stat-num" id="st-pendientes">0</div><div class="stat-label">Sin registrar</div></div>
+      <div class="stat-card stat-blue"><div class="stat-num" id="st-ipads">0</div><div class="stat-label">iPads en uso</div></div>
+      <div class="stat-card stat-gold"><div class="stat-num" id="st-libres">0</div><div class="stat-label">iPads libres</div></div>
+    </div>
+
+    <!-- Estado iPads -->
+    <div class="table-wrap" style="margin-bottom:16px;">
+      <div class="table-header">
+        <h3>Estado de iPads</h3>
+        <button class="btn btn-outline btn-sm" onclick="refrescarVista()">↻ Actualizar</button>
+      </div>
+      <div class="ipads-estado-grid" id="ipads-estado"></div>
+    </div>
+
+    <!-- Tabla registros -->
+    <div class="table-wrap">
+      <div class="table-header">
+        <h3>Registros de la sesión</h3>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="refrescarVista()">↻ Actualizar</button>
+          <button class="btn btn-outline btn-sm" onclick="exportarCSV()">⬇ Exportar</button>
+        </div>
+      </div>
+      <div id="tabla-registros">
+        <div class="empty-state"><div class="icon">📋</div>Aún no hay registros en esta sesión.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="cerrarSesion()">🔒 Cerrar sesión y guardar</button>
+      <button class="btn btn-outline" onclick="exportarCSV()">⬇ Exportar CSV</button>
+      <button class="btn btn-outline" onclick="cerrarSesionProfesor()" style="margin-left:auto;color:var(--red);border-color:var(--red);">Salir del modo profesor</button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ALERTA TOAST -->
+<div class="alerta" id="alerta"></div>
+
+<script>
+// ── ESTADO GLOBAL ──
+let sesion = {
+  activa: false,
+  asignatura: '', curso: '', docente: '',
+  modo: 'individual',
+  totalEsperado: 0,
+  ipads: [],
+  registros: [],
+  inicio: null,
+  paUrl: 'https://script.google.com/macros/s/AKfycbzYvwbu4igEXBtb-Y6YMBCC_dlFnAuA9-EckBRVDHLTyC1T1b3iAa9Y-K2uU6ih0vkOPQ/exec'
+};
+let ipadSeleccionado = null;
+let ipadsConfig = [];
+
+// ── RELOJ ──
+function actualizarReloj() {
+  const now = new Date();
+  document.getElementById('reloj').textContent =
+    now.toLocaleDateString('es-CL',{weekday:'short',day:'numeric',month:'short'}) + ' · ' +
+    now.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+}
+setInterval(actualizarReloj, 1000);
+actualizarReloj();
+
+// ── CLAVE DE ACCESO ──
+let CLAVE_PROFESOR = 'cumbres2025';
+let tabPendiente = null;
+let autenticado = false;
+
+function accederTab(tab) {
+  if(autenticado) { cambiarTab(tab); return; }
+  tabPendiente = tab;
+  document.getElementById('input-clave').value = '';
+  document.getElementById('clave-error').style.display = 'none';
+  document.getElementById('modal-clave').style.display = 'flex';
+  setTimeout(() => document.getElementById('input-clave').focus(), 100);
+}
+
+function verificarClave() {
+  const ingresada = document.getElementById('input-clave').value;
+  if(ingresada === CLAVE_PROFESOR) {
+    autenticado = true;
+    cerrarModal();
+    if(tabPendiente) cambiarTab(tabPendiente);
+    tabPendiente = null;
+  } else {
+    document.getElementById('clave-error').style.display = 'block';
+    document.getElementById('input-clave').value = '';
+    document.getElementById('input-clave').focus();
+  }
+}
+
+function cerrarModal() {
+  document.getElementById('modal-clave').style.display = 'none';
+  tabPendiente = null;
+}
+
+function cerrarSesionProfesor() {
+  autenticado = false;
+  cambiarTab('estudiante');
+  mostrarAlerta('🔒 Sesión de profesor cerrada');
+}
+
+// ── TABS ──
+function cambiarTab(tab) {
+  const tabs = ['config','estudiante','profesor'];
+  tabs.forEach(t => {
+    const tabEl = document.getElementById('tab-'+t);
+    const vistaEl = document.getElementById('vista-'+t);
+    if(tabEl) tabEl.classList.toggle('active', t === tab);
+    if(vistaEl) vistaEl.classList.toggle('active', t === tab);
+  });
+  if(tab === 'profesor') refrescarVista();
+  if(tab === 'estudiante') renderBotonesIpad();
+}
+
+// ── CONFIG IPADS ──
+function renderIpadsChips() {
+  const wrap = document.getElementById('ipads-chips');
+  wrap.innerHTML = ipadsConfig.map((ip,i) =>
+    `<div class="ipad-chip">📱 ${ip} <span class="remove" onclick="quitarIpad(${i})">×</span></div>`
+  ).join('');
+}
+
+function agregarIpad() {
+  const inp = document.getElementById('nuevo-ipad');
+  const val = inp.value.trim();
+  if(!val) return;
+  if(ipadsConfig.includes(val)){ mostrarAlerta('⚠️ Ese iPad ya está en la lista'); return; }
+  ipadsConfig.push(val);
+  renderIpadsChips();
+  inp.value = '';
+  inp.focus();
+}
+
+function agregarSerie() {
+  const n = parseInt(prompt('¿Hasta qué número? (se crearán iPad-01, iPad-02... hasta ese número)'));
+  if(!n || n < 1 || n > 60) return;
+  for(let i=1;i<=n;i++){
+    const codigo = 'iPad-' + String(i).padStart(2,'0');
+    if(!ipadsConfig.includes(codigo)) ipadsConfig.push(codigo);
+  }
+  renderIpadsChips();
+}
+
+function quitarIpad(idx) {
+  ipadsConfig.splice(idx,1);
+  renderIpadsChips();
+}
+
+function limpiarConfig() {
+  ipadsConfig = [];
+  renderIpadsChips();
+  ['cfg-asignatura','cfg-docente','cfg-total'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cfg-curso').value = '';
+}
+
+// ── INICIAR SESIÓN ──
+function iniciarSesion() {
+  const asig = document.getElementById('cfg-asignatura').value.trim();
+  const curso = document.getElementById('cfg-curso').value;
+  const doc = document.getElementById('cfg-docente').value.trim();
+  const modo = document.getElementById('cfg-modo').value;
+  const total = parseInt(document.getElementById('cfg-total').value) || 0;
+  const paUrl = document.getElementById('cfg-pa-url').value.trim() ||
+    'https://script.google.com/macros/s/AKfycbzYvwbu4igEXBtb-Y6YMBCC_dlFnAuA9-EckBRVDHLTyC1T1b3iAa9Y-K2uU6ih0vkOPQ/exec';
+
+  if(!asig || !curso || !doc){
+    mostrarAlerta('⚠️ Completa Asignatura, Curso y Docente'); return;
+  }
+  if(ipadsConfig.length === 0){
+    mostrarAlerta('⚠️ Agrega al menos un iPad'); return;
+  }
+
+  sesion = {
+    activa: true, asignatura: asig, curso, docente: doc,
+    modo, totalEsperado: total,
+    ipads: ipadsConfig.map(ip => ({ codigo: ip, asignado: false, usuario: '' })),
+    registros: [], inicio: new Date(),
+    paUrl: paUrl
+  };
+
+  if(paUrl) {
+    mostrarAlerta('✅ Sesión iniciada · Conectado a Google Sheets');
+  } else {
+    mostrarAlerta('✅ Sesión iniciada · Sin conexión a Google Sheets (solo local)');
+  }
+  cambiarTab('estudiante');
+}
+
+// ── VISTA ESTUDIANTE ──
+function renderBotonesIpad() {
+  if(!sesion.activa) {
+    document.getElementById('banner-titulo').textContent = 'Sin sesión activa';
+    document.getElementById('banner-info').textContent = 'Pide al profesor que configure la sesión';
+    return;
+  }
+
+  document.getElementById('banner-titulo').textContent = `${sesion.asignatura} · ${sesion.curso}`;
+  document.getElementById('banner-info').textContent = `Docente: ${sesion.docente} · ${formatHora(sesion.inicio)}`;
+  document.getElementById('banner-contador').textContent = sesion.registros.length;
+
+  // Modo
+  const esGrupo = sesion.modo === 'grupo';
+  document.getElementById('modo-individual').style.display = esGrupo ? 'none' : 'block';
+  document.getElementById('modo-grupo').style.display = esGrupo ? 'block' : 'none';
+
+  const wrapId = esGrupo ? 'ipad-buttons-grupo' : 'ipad-buttons-wrap';
+  const wrap = document.getElementById(wrapId);
+  wrap.innerHTML = sesion.ipads.map(ip =>
+    `<button class="ipad-btn ${ip.asignado ? 'ocupado' : ''}"
+      id="btn-${ip.codigo.replace(/[^a-z0-9]/gi,'-')}"
+      onclick="seleccionarIpad('${ip.codigo}')"
+      ${ip.asignado ? 'disabled title="Ya asignado a ' + ip.usuario + '"' : ''}>
+      📱 ${ip.codigo}
+    </button>`
+  ).join('');
+  ipadSeleccionado = null;
+}
+
+function seleccionarIpad(codigo) {
+  if(!sesion.activa) return;
+  ipadSeleccionado = codigo;
+  const wrapId = sesion.modo === 'grupo' ? 'ipad-buttons-grupo' : 'ipad-buttons-wrap';
+  document.querySelectorAll(`#${wrapId} .ipad-btn`).forEach(b => b.classList.remove('selected'));
+  const safe = codigo.replace(/[^a-z0-9]/gi,'-');
+  const btn = document.getElementById('btn-'+safe);
+  if(btn) btn.classList.add('selected');
+}
+
+function limpiarOk() {
+  document.getElementById('registro-ok').classList.remove('show');
+  document.getElementById('form-registro').style.display = 'block';
+}
+
+function registrarUso() {
+  if(!sesion.activa){ mostrarAlerta('⚠️ No hay sesión activa'); return; }
+  if(!ipadSeleccionado){ mostrarAlerta('⚠️ Selecciona un iPad'); return; }
+
+  let usuario = '', extra = '';
+  if(sesion.modo === 'individual') {
+    usuario = document.getElementById('nombre-estudiante').value.trim();
+    if(!usuario){ mostrarAlerta('⚠️ Escribe tu nombre o número de lista'); return; }
+  } else {
+    usuario = document.getElementById('nombre-grupo').value.trim();
+    extra = document.getElementById('integrantes-grupo').value.trim();
+    if(!usuario){ mostrarAlerta('⚠️ Escribe el nombre del grupo'); return; }
+  }
+
+  // Verificar duplicado de estudiante
+  const yaRegistrado = sesion.registros.find(r => r.usuario.toLowerCase() === usuario.toLowerCase());
+  if(yaRegistrado){ mostrarAlerta('⚠️ Este nombre ya está registrado'); return; }
+
+  const hora = new Date();
+  sesion.registros.push({
+    usuario, ipad: ipadSeleccionado, hora,
+    integrantes: extra, modo: sesion.modo
+  });
+
+  const ipadObj = sesion.ipads.find(i => i.codigo === ipadSeleccionado);
+  if(ipadObj){ ipadObj.asignado = true; ipadObj.usuario = usuario; }
+
+  // Enviar a Google Sheets vía Apps Script
+  enviarAPowerAutomate({
+    fecha: hora.toLocaleDateString('es-CL'),
+    hora: formatHora(hora),
+    asignatura: sesion.asignatura,
+    curso: sesion.curso,
+    docente: sesion.docente,
+    estudiante: usuario,
+    ipad: ipadSeleccionado,
+    integrantes: extra || '',
+    modo: sesion.modo
+  });
+
+  document.getElementById('ok-titulo').textContent = '¡Listo, ' + usuario.split(' ')[0] + '!';
+  document.getElementById('ok-detalle').textContent =
+    `📱 ${ipadSeleccionado} · ${formatHora(hora)}${extra ? ' · Grupo: ' + extra : ''}`;
+
+  document.getElementById('form-registro').style.display = 'none';
+  document.getElementById('registro-ok').classList.add('show');
+  document.getElementById('banner-contador').textContent = sesion.registros.length;
+}
+
+function nuevoRegistro() {
+  document.getElementById('nombre-estudiante').value = '';
+  document.getElementById('nombre-grupo').value = '';
+  document.getElementById('integrantes-grupo').value = '';
+  ipadSeleccionado = null;
+  document.getElementById('registro-ok').classList.remove('show');
+  document.getElementById('form-registro').style.display = 'block';
+  renderBotonesIpad();
+}
+
+// ── VISTA PROFESOR ──
+function refrescarVista() {
+  if(!sesion.activa) return;
+
+  const regs = sesion.registros.length;
+  const enUso = sesion.ipads.filter(i => i.asignado).length;
+  const libres = sesion.ipads.length - enUso;
+  const pendientes = Math.max(0, (sesion.totalEsperado || sesion.ipads.length) - regs);
+
+  document.getElementById('st-registrados').textContent = regs;
+  document.getElementById('st-pendientes').textContent = pendientes;
+  document.getElementById('st-ipads').textContent = enUso;
+  document.getElementById('st-libres').textContent = libres;
+
+  // Estado iPads
+  document.getElementById('ipads-estado').innerHTML = sesion.ipads.map(ip =>
+    `<div class="ipad-estado ${ip.asignado ? 'usado' : 'libre'}">
+      <div class="dot"></div>
+      <span>${ip.codigo}</span>
+      ${ip.asignado ? `<span style="font-size:10px;opacity:0.7">→ ${ip.usuario.split(' ')[0]}</span>` : ''}
+    </div>`
+  ).join('');
+
+  // Tabla
+  if(sesion.registros.length === 0) {
+    document.getElementById('tabla-registros').innerHTML =
+      '<div class="empty-state"><div class="icon">📋</div>Aún no hay registros.</div>';
+    return;
+  }
+
+  document.getElementById('tabla-registros').innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Estudiante / Grupo</th>
+          <th>iPad</th>
+          ${sesion.modo === 'grupo' ? '<th>Integrantes</th>' : ''}
+          <th>Hora</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sesion.registros.map((r,i) => `
+          <tr>
+            <td style="color:var(--soft);font-size:12px;">${i+1}</td>
+            <td style="font-weight:600;">${r.usuario}</td>
+            <td><span class="badge badge-blue">📱 ${r.ipad}</span></td>
+            ${sesion.modo === 'grupo' ? `<td style="font-size:12px;color:var(--soft);">${r.integrantes || '—'}</td>` : ''}
+            <td style="font-size:12px;color:var(--soft);">${formatHora(r.hora)}</td>
+            <td><span class="badge badge-green">✓ Registrado</span></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+function cerrarSesion() {
+  if(!sesion.activa){ mostrarAlerta('No hay sesión activa'); return; }
+  exportarCSV();
+  // Enviar registro de cierre a Excel
+  if(sesion.paUrl) {
+    enviarAPowerAutomate({
+      fecha: new Date().toLocaleDateString('es-CL'),
+      hora: new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}),
+      asignatura: sesion.asignatura,
+      curso: sesion.curso,
+      docente: sesion.docente,
+      estudiante: '--- FIN DE SESIÓN ---',
+      ipad: `Total: ${sesion.registros.length} registros`,
+      integrantes: '', modo: 'cierre'
+    });
+  }
+  sesion.activa = false;
+  mostrarAlerta('🔒 Sesión cerrada · CSV descargado · Google Sheets actualizado');
+}
+
+function exportarCSV() {
+  if(!sesion.activa || sesion.registros.length === 0){
+    mostrarAlerta('⚠️ No hay registros para exportar'); return;
+  }
+  const fecha = sesion.inicio.toLocaleDateString('es-CL').replace(/\//g,'-');
+  let csv = 'N°,Estudiante/Grupo,iPad,Integrantes,Hora,Asignatura,Curso,Docente\n';
+  sesion.registros.forEach((r,i) => {
+    csv += `${i+1},"${r.usuario}","${r.ipad}","${r.integrantes || ''}","${formatHora(r.hora)}","${sesion.asignatura}","${sesion.curso}","${sesion.docente}"\n`;
+  });
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `iPads_${sesion.curso}_${sesion.asignatura}_${fecha}.csv`;
+  a.click();
+  mostrarAlerta('📥 Archivo descargado');
+}
+
+function cambiarClave() {
+  const nueva = document.getElementById('nueva-clave').value.trim();
+  const confirmar = document.getElementById('confirmar-clave').value.trim();
+  if(!nueva || nueva.length < 4) { mostrarAlerta('⚠️ La clave debe tener al menos 4 caracteres'); return; }
+  if(nueva !== confirmar) { mostrarAlerta('⚠️ Las claves no coinciden'); return; }
+  CLAVE_PROFESOR = nueva;
+  document.getElementById('nueva-clave').value = '';
+  document.getElementById('confirmar-clave').value = '';
+  mostrarAlerta('✅ Clave actualizada correctamente');
+}
+
+// ── POWER AUTOMATE ──
+function enviarAPowerAutomate(datos) {
+  if(!sesion.paUrl) return;
+  try {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = sesion.paUrl;
+    const iframeName = 'iframe-envio-' + Date.now();
+    form.target = iframeName;
+    form.style.display = 'none';
+
+    const campos = {
+      fecha:       datos.fecha       || '',
+      hora:        datos.hora        || '',
+      asignatura:  datos.asignatura  || '',
+      curso:       datos.curso       || '',
+      docente:     datos.docente     || '',
+      estudiante:  datos.estudiante  || '',
+      ipad:        datos.ipad        || '',
+      integrantes: datos.integrantes || '',
+      modo:        datos.modo        || ''
+    };
+
+    Object.keys(campos).forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = campos[key];
+      form.appendChild(input);
+    });
+
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    form.submit();
+
+    setTimeout(() => {
+      if(form.parentNode) form.parentNode.removeChild(form);
+      if(iframe.parentNode) iframe.parentNode.removeChild(iframe);
+    }, 6000);
+  } catch(err) {
+    console.warn('Error al enviar a Google Sheets:', err);
+  }
+}
+
+function probarConexion() {
+  const url = document.getElementById('cfg-pa-url').value.trim();
+  const dot = document.getElementById('pa-dot');
+  const texto = document.getElementById('pa-texto');
+
+  if(!url) {
+    dot.style.background = 'var(--border)';
+    texto.textContent = 'Sin URL configurada';
+    mostrarAlerta('⚠️ La URL de Google Sheets no está configurada'); return;
+  }
+
+  dot.style.background = 'var(--gold)';
+  texto.textContent = 'Enviando registro de prueba...';
+
+  // Mismo método que el registro real: formulario oculto
+  // No usa fetch — evita bloqueos CORS completamente
+  try {
+    const iframeName = 'iframe-test-' + Date.now();
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.style.display = 'none';
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+    form.target = iframeName;
+    form.style.display = 'none';
+
+    const campos = {
+      fecha: new Date().toLocaleDateString('es-CL'),
+      hora: new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}),
+      asignatura: 'PRUEBA_CONEXION',
+      curso: 'TEST', docente: 'TEST',
+      estudiante: 'Prueba de conexión',
+      ipad: 'iPad-TEST', integrantes: '', modo: 'test'
+    };
+
+    Object.keys(campos).forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = campos[key];
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    form.submit();
+
+    // Asumir éxito después de 2 segundos (no podemos leer respuesta por CORS)
+    // El usuario debe verificar que aparezca "PRUEBA_CONEXION" en su Google Sheets
+    setTimeout(() => {
+      dot.style.background = 'var(--green)';
+      texto.textContent = '✅ Solicitud enviada — revisa tu Google Sheets para confirmar';
+      mostrarAlerta('✅ Prueba enviada — verifica que apareció "PRUEBA_CONEXION" en tu hoja');
+      if(form.parentNode) form.parentNode.removeChild(form);
+      if(iframe.parentNode) iframe.parentNode.removeChild(iframe);
+    }, 2500);
+
+  } catch(err) {
+    dot.style.background = 'var(--red)';
+    texto.textContent = '❌ Error al enviar — revisa la URL';
+    mostrarAlerta('❌ Error: ' + err.message);
+  }
+}
+
+// ── UTILIDADES ──
+function formatHora(d) {
+  return new Date(d).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+}
+
+function mostrarAlerta(msg) {
+  const el = document.getElementById('alerta');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2800);
+}
+
+// Cargar iPads de muestra
+ipadsConfig = Array.from({length:10},(_,i)=>'iPad-'+String(i+1).padStart(2,'0'));
+renderIpadsChips();
+</script>
+</body>
+</html>
